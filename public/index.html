@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Schrotty-NF Verwaltung</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Schrotty-NF</h1>
+    <nav>
+      <a href="#uebersicht" data-tab="uebersicht">Übersicht</a>
+      <a href="#auftraege" data-tab="auftraege">Aufträge</a>
+      <a href="#ankaeufe" data-tab="ankaeufe">Ankäufe</a>
+      <a href="#kunden" data-tab="kunden">Kunden</a>
+      <a href="#materialien" data-tab="materialien">Materialpreise</a>
+    </nav>
+  </header>
+
+  <main id="inhalt"></main>
+
+  <dialog id="dialog">
+    <form id="dialog-form" method="dialog">
+      <h2 id="dialog-titel"></h2>
+      <div id="dialog-felder"></div>
+      <p id="dialog-fehler" class="fehler" hidden></p>
+      <div class="knoepfe">
+        <button type="button" id="dialog-abbrechen" class="zweitrangig">Abbrechen</button>
+        <button type="submit">Speichern</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="meldung" role="status" hidden></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

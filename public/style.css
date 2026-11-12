@@ -1,0 +1,146 @@
+:root {
+  --bg: #f4f5f7;
+  --karte: #ffffff;
+  --text: #1d2330;
+  --leise: #5f6b7a;
+  --rand: #dde1e7;
+  --akzent: #c2571a;
+  --akzent-dunkel: #9c4413;
+  --gut: #2f7d4f;
+  --warn: #b7791f;
+  --schlecht: #b83232;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #15181e;
+    --karte: #1f242c;
+    --text: #e6e9ee;
+    --leise: #9aa4b2;
+    --rand: #323945;
+    --akzent: #e07a3c;
+    --akzent-dunkel: #c2571a;
+  }
+}
+
+* { box-sizing: border-box; }
+a { color: var(--akzent); }
+nav a { color: #cfd5dd; }
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.45;
+}
+
+header {
+  background: #23272f;
+  color: #fff;
+  padding: 0 16px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 24px;
+}
+header h1 { font-size: 1.2rem; margin: 12px 0; color: var(--akzent); }
+nav { display: flex; flex-wrap: wrap; gap: 4px; }
+nav a {
+  color: #cfd5dd;
+  text-decoration: none;
+  padding: 14px 12px;
+  border-bottom: 3px solid transparent;
+}
+nav a.aktiv { color: #fff; border-bottom-color: var(--akzent); }
+
+main { max-width: 1100px; margin: 0 auto; padding: 20px 16px 60px; }
+
+.kopf { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+.kopf h2 { margin: 0; }
+.filter { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+
+.kacheln { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 20px; }
+.kachel, .karte {
+  background: var(--karte);
+  border: 1px solid var(--rand);
+  border-radius: 8px;
+  padding: 14px 16px;
+}
+.kachel .wert { font-size: 1.6rem; font-weight: 600; }
+.kachel .label { color: var(--leise); font-size: .9rem; }
+.karte { margin-bottom: 16px; }
+.karte h3 { margin-top: 0; font-size: 1.05rem; }
+.raster { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; }
+
+.tabelle-wrap { overflow-x: auto; background: var(--karte); border: 1px solid var(--rand); border-radius: 8px; }
+table { width: 100%; border-collapse: collapse; }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--rand); vertical-align: top; }
+th { font-size: .85rem; color: var(--leise); font-weight: 600; white-space: nowrap; }
+tr:last-child td { border-bottom: none; }
+td.zahl, th.zahl { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+td.aktionen { white-space: nowrap; text-align: right; }
+.leer { color: var(--leise); padding: 16px; text-align: center; }
+.klein { color: var(--leise); font-size: .85rem; }
+
+.badge { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: .8rem; font-weight: 600; color: #fff; }
+.badge.offen { background: var(--warn); }
+.badge.geplant { background: #3a6fb0; }
+.badge.erledigt { background: var(--gut); }
+.badge.storniert { background: #777; }
+
+button, .knopf {
+  font: inherit;
+  background: var(--akzent);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 14px;
+  cursor: pointer;
+}
+button:hover { background: var(--akzent-dunkel); }
+button.zweitrangig { background: transparent; color: var(--text); border: 1px solid var(--rand); }
+button.klein { padding: 3px 9px; font-size: .85rem; }
+button.gefahr { background: transparent; color: var(--schlecht); border: 1px solid var(--schlecht); }
+
+input, select, textarea {
+  font: inherit;
+  color: var(--text);
+  background: var(--karte);
+  border: 1px solid var(--rand);
+  border-radius: 6px;
+  padding: 7px 9px;
+  width: 100%;
+}
+.filter input, .filter select { width: auto; }
+input.preis { width: 110px; text-align: right; }
+
+dialog {
+  border: 1px solid var(--rand);
+  border-radius: 10px;
+  padding: 0;
+  width: min(520px, calc(100vw - 32px));
+  background: var(--karte);
+  color: var(--text);
+}
+dialog::backdrop { background: rgba(0, 0, 0, .45); }
+dialog form { padding: 20px; }
+dialog h2 { margin-top: 0; }
+.feld { margin-bottom: 12px; }
+.feld label { display: block; font-size: .85rem; color: var(--leise); margin-bottom: 3px; }
+.knoepfe { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+.fehler { color: var(--schlecht); }
+.vorschau { font-weight: 600; }
+
+#meldung {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #23272f;
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 8px;
+}
+
+@media print {
+  header, button, .filter, td.aktionen { display: none !important; }
+}
