@@ -30,6 +30,10 @@ async function api(pfad, optionen = {}) {
   });
   if (res.status === 204) return null;
   const daten = await res.json().catch(() => ({}));
+  if (res.status === 401 && !pfad.startsWith('/auth/')) {
+    loginZeigen(false);
+    throw new Error(daten.fehler || 'Bitte anmelden');
+  }
   if (!res.ok) throw new Error(daten.fehler || `Fehler ${res.status}`);
   return daten;
 }
@@ -475,6 +479,119 @@ ansichten.materialien = async () => {
     });
 };
 
+ansichten.benutzer = async () => {
+  const [liste, status] = await Promise.all([api('/benutzer'), api('/auth/status')]);
+  const ich = status.benutzer;
+  inhalt.innerHTML = `
+    <div class="kopf">
+      <h2>Benutzer</h2>
+      <div class="filter"><button id="neu">+ Neuer Benutzer</button></div>
+    </div>
+    <p class="klein">Alle Benutzer haben die gleichen Rechte. Ein neuer Benutzer kann sein Passwort nach der ersten Anmeldung hier selbst ändern.</p>
+    <div class="tabelle-wrap"><table>
+      <tr><th>Benutzername</th><th>Angelegt</th><th></th></tr>
+      ${liste
+        .map(
+          (b) => `<tr>
+          <td>${esc(b.name)}${b.id === ich.id ? ' <span class="klein">(du)</span>' : ''}</td>
+          <td>${datumDe((b.erstellt_am || '').replace(' ', 'T'))}</td>
+          <td class="aktionen">
+            <button class="klein zweitrangig" data-pw="${b.id}" data-name="${esc(b.name)}">Passwort ändern</button>
+            ${b.id === ich.id ? '' : `<button class="klein gefahr" data-loeschen="${b.id}" data-name="${esc(b.name)}">Löschen</button>`}
+          </td></tr>`
+        )
+        .join('')}
+    </table></div>`;
+
+  const passwortFelder = [
+    { name: 'passwort', label: 'Passwort (mind. 8 Zeichen)', typ: 'password', pflicht: true },
+    { name: 'wdh', label: 'Passwort wiederholen', typ: 'password', pflicht: true },
+  ];
+  const gleich = (d) => {
+    if (d.passwort !== d.wdh) throw new Error('Die Passwörter stimmen nicht überein');
+  };
+
+  $('#neu').onclick = () =>
+    formular({
+      titel: 'Neuer Benutzer',
+      felder: [{ name: 'name', label: 'Benutzername', pflicht: true }, ...passwortFelder],
+      speichern: (d) => (gleich(d), api('/benutzer', { method: 'POST', body: { name: d.name, passwort: d.passwort } })),
+    });
+
+  inhalt.querySelectorAll('[data-pw]').forEach(
+    (b) =>
+      (b.onclick = () =>
+        formular({
+          titel: `Passwort ändern: ${b.dataset.name}`,
+          felder: passwortFelder,
+          speichern: (d) => (gleich(d), api(`/benutzer/${b.dataset.pw}/passwort`, { method: 'PUT', body: { passwort: d.passwort } })),
+        }))
+  );
+  inhalt.querySelectorAll('[data-loeschen]').forEach(
+    (b) => (b.onclick = () => loeschen(`Benutzer „${b.dataset.name}“ wirklich löschen?`, '/benutzer/' + b.dataset.loeschen))
+  );
+};
+
+// ---------- Anmeldung ----------
+let einrichtung = false;
+
+function loginZeigen(ersteinrichtung) {
+  einrichtung = ersteinrichtung;
+  document.body.classList.add('abgemeldet');
+  $('#login').hidden = false;
+  $('#sitzung').hidden = true;
+  inhalt.innerHTML = '';
+  $('#login-titel').textContent = einrichtung ? 'Ersten Zugang anlegen' : 'Anmelden';
+  $('#login-knopf').textContent = einrichtung ? 'Zugang anlegen' : 'Anmelden';
+  $('#login-hinweis').hidden = !einrichtung;
+  $('#login-wdh-feld').hidden = !einrichtung;
+  $('#login-wdh').required = einrichtung;
+  $('#login-passwort').autocomplete = einrichtung ? 'new-password' : 'current-password';
+  $('#login-fehler').hidden = true;
+  $('#login-name').focus();
+}
+
+function angemeldet(benutzer) {
+  document.body.classList.remove('abgemeldet');
+  $('#login').hidden = true;
+  $('#login-form').reset();
+  $('#sitzung').hidden = false;
+  $('#angemeldet-als').textContent = benutzer.name;
+  zeigen();
+}
+
+$('#login-form').onsubmit = async (e) => {
+  e.preventDefault();
+  const d = Object.fromEntries(new FormData(e.target).entries());
+  const fehler = $('#login-fehler');
+  try {
+    if (einrichtung && d.passwort !== d.wdh) throw new Error('Die Passwörter stimmen nicht überein');
+    const r = await api(einrichtung ? '/auth/einrichten' : '/auth/anmelden', {
+      method: 'POST',
+      body: { name: d.name, passwort: d.passwort },
+    });
+    angemeldet(r.benutzer);
+  } catch (err) {
+    fehler.textContent = err.message;
+    fehler.hidden = false;
+  }
+};
+
+$('#abmelden').onclick = async () => {
+  await api('/auth/abmelden', { method: 'POST' }).catch(() => {});
+  loginZeigen(false);
+};
+
+async function start() {
+  try {
+    const s = await api('/auth/status');
+    if (s.benutzer) angemeldet(s.benutzer);
+    else loginZeigen(s.einrichtung_noetig);
+  } catch (err) {
+    inhalt.innerHTML = `<p class="fehler">Server nicht erreichbar: ${esc(err.message)}</p>`;
+  }
+}
+
 // ---------- Navigation ----------
 async function zeigen() {
   const [tab, param] = (location.hash.slice(1) || 'uebersicht').split('/');
@@ -488,5 +605,7 @@ async function zeigen() {
   }
 }
 
-window.addEventListener('hashchange', zeigen);
-zeigen();
+window.addEventListener('hashchange', () => {
+  if (!document.body.classList.contains('abgemeldet')) zeigen();
+});
+start();

@@ -2,6 +2,7 @@
 
 const path = require('node:path');
 const express = require('express');
+const { createAuth, AuthError } = require('./auth');
 
 const AUFTRAG_TYPEN = ['Abholung', 'Ankauf', 'Entrümpelung', 'Containerdienst', 'Sonstiges'];
 const AUFTRAG_STATUS = ['offen', 'geplant', 'erledigt', 'storniert'];
@@ -34,6 +35,21 @@ function createApp(db) {
   const app = express();
   app.use(express.json());
   app.use(express.static(path.join(__dirname, '..', 'public')));
+
+  // Schutz gegen Cross-Site-Requests: Ändernde Anfragen müssen JSON senden.
+  // Ein fremdes HTML-Formular kann das nicht, zusammen mit SameSite=Strict-Cookies.
+  app.use('/api', (req, res, next) => {
+    const typ = (req.headers['content-type'] || '').toLowerCase();
+    if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method) && !typ.startsWith('application/json')) {
+      return res.status(415).json({ fehler: 'Anfrage muss JSON sein' });
+    }
+    next();
+  });
+
+  const auth = createAuth(db);
+  app.use('/api/auth', auth.router);
+  app.use('/api', auth.schutz);
+  app.use('/api/benutzer', auth.verwaltung);
 
   const api = express.Router();
 
@@ -297,6 +313,7 @@ function createApp(db) {
 
   // eslint-disable-next-line no-unused-vars
   app.use((err, req, res, next) => {
+    if (err instanceof AuthError) return res.status(err.status).json({ fehler: err.message });
     if (err instanceof ValidationError) return res.status(400).json({ fehler: err.message });
     if (err.type === 'entity.parse.failed') return res.status(400).json({ fehler: 'Ungültiges JSON' });
     console.error(err);

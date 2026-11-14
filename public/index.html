@@ -15,10 +15,27 @@
       <a href="#ankaeufe" data-tab="ankaeufe">Ankäufe</a>
       <a href="#kunden" data-tab="kunden">Kunden</a>
       <a href="#materialien" data-tab="materialien">Materialpreise</a>
+      <a href="#benutzer" data-tab="benutzer">Benutzer</a>
     </nav>
+    <div id="sitzung" hidden>
+      <span id="angemeldet-als" class="klein"></span>
+      <button type="button" id="abmelden" class="zweitrangig klein">Abmelden</button>
+    </div>
   </header>
 
   <main id="inhalt"></main>
+
+  <section id="login" hidden>
+    <form id="login-form" class="login-karte">
+      <h2 id="login-titel">Anmelden</h2>
+      <p id="login-hinweis" class="klein" hidden>Willkommen! Lege jetzt den ersten Zugang an. Damit kannst du dich künftig anmelden und weitere Benutzer hinzufügen.</p>
+      <div class="feld"><label for="login-name">Benutzername</label><input id="login-name" name="name" autocomplete="username" required></div>
+      <div class="feld"><label for="login-passwort">Passwort</label><input id="login-passwort" name="passwort" type="password" autocomplete="current-password" required></div>
+      <div class="feld" id="login-wdh-feld" hidden><label for="login-wdh">Passwort wiederholen</label><input id="login-wdh" name="wdh" type="password" autocomplete="new-password"></div>
+      <p id="login-fehler" class="fehler" hidden></p>
+      <div class="knoepfe"><button type="submit" id="login-knopf">Anmelden</button></div>
+    </form>
+  </section>
 
   <dialog id="dialog">
     <form id="dialog-form" method="dialog">

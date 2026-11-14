@@ -45,6 +45,20 @@ CREATE TABLE IF NOT EXISTS ankaeufe (
   notiz        TEXT
 );
 
+CREATE TABLE IF NOT EXISTS benutzer (
+  id            INTEGER PRIMARY KEY AUTOINCREMENT,
+  name          TEXT    NOT NULL UNIQUE,
+  salt          TEXT    NOT NULL,
+  passwort_hash TEXT    NOT NULL,
+  erstellt_am   TEXT    NOT NULL DEFAULT (datetime('now', 'localtime'))
+);
+
+CREATE TABLE IF NOT EXISTS sitzungen (
+  token_hash  TEXT    PRIMARY KEY,
+  benutzer_id INTEGER NOT NULL REFERENCES benutzer(id) ON DELETE CASCADE,
+  ablauf      TEXT    NOT NULL
+);
+
 CREATE INDEX IF NOT EXISTS idx_auftraege_termin ON auftraege(termin);
 CREATE INDEX IF NOT EXISTS idx_ankaeufe_datum ON ankaeufe(datum);
 `;
