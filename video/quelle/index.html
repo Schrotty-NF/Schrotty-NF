@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="de" data-resolution="landscape">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      :root {
+        --ground: #1b1e24;
+        --ground-2: #23272f;
+        --ink: #f4f5f7;
+        --leise: #9aa4b2;
+        --akzent: #e07a3c;
+        --akzent-dunkel: #c2571a;
+        --font-display: "Inter", sans-serif;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: var(--ground);
+      }
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        font-family: var(--font-display);
+        color: var(--ink);
+        background: radial-gradient(ellipse at 30% 20%, #2b3039 0%, var(--ground) 65%);
+      }
+      .clip {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+      }
+      /* durchgehender Akzentbalken unten */
+      #balken {
+        position: absolute;
+        top: auto;
+        left: 0;
+        bottom: 0;
+        height: 14px;
+        width: 100%;
+        background: var(--akzent-dunkel);
+        transform-origin: left center;
+        z-index: 5;
+      }
+
+      /* Szene 1 */
+      .marke { font-size: 200px; font-weight: 900; letter-spacing: -0.04em; line-height: 1; }
+      .marke span { color: var(--akzent); }
+      .unterzeile { margin-top: 36px; font-size: 64px; font-weight: 500; color: var(--leise); }
+
+      /* Szenen-Überschriften */
+      .gross { font-size: 140px; font-weight: 800; letter-spacing: -0.035em; line-height: 1.05; }
+      .gross em { font-style: normal; color: var(--akzent); }
+
+      /* Szene 2: Leistungen */
+      .leistungen { display: flex; gap: 40px; margin-top: 80px; }
+      .leistung {
+        width: 460px;
+        padding: 44px 30px;
+        background: var(--ground-2);
+        border: 2px solid #3a414d;
+        border-radius: 20px;
+        font-size: 48px;
+        font-weight: 700;
+      }
+      .leistung .nr { display: block; font-size: 30px; color: var(--akzent); margin-bottom: 14px; font-weight: 600; }
+
+      /* Szene 3: Materialien */
+      .materialien {
+        display: grid;
+        grid-template-columns: repeat(4, 380px);
+        gap: 28px;
+        margin-top: 70px;
+      }
+      .material {
+        padding: 30px 20px;
+        border-radius: 999px;
+        border: 3px solid var(--akzent);
+        font-size: 42px;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+
+      /* Szene 4 */
+      .zeile { display: block; }
+
+      /* Szene 5: Kontakt */
+      .aufruf { font-size: 72px; font-weight: 600; color: var(--leise); }
+      .telefon {
+        margin-top: 30px;
+        font-size: 170px;
+        font-weight: 900;
+        letter-spacing: -0.02em;
+        color: var(--ink);
+        background: var(--akzent-dunkel);
+        padding: 20px 70px 30px;
+        border-radius: 28px;
+      }
+      .absender { margin-top: 60px; font-size: 64px; font-weight: 800; }
+      .absender span { color: var(--akzent); }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="20" data-width="1920" data-height="1080">
+
+      <section id="s1" class="clip" data-start="0" data-duration="4" data-track-index="0">
+        <h1 class="marke">Schrotty<span>-NF</span></h1>
+        <p class="unterzeile">Ihr Schrott wird zu Geld.</p>
+      </section>
+
+      <section id="s2" class="clip" data-start="4" data-duration="4" data-track-index="0">
+        <h2 class="gross">Wir holen <em>ab.</em></h2>
+        <div class="leistungen">
+          <div class="leistung"><span class="nr">01</span>Schrottabholung</div>
+          <div class="leistung"><span class="nr">02</span>Entrümpelung</div>
+          <div class="leistung"><span class="nr">03</span>Containerdienst</div>
+        </div>
+      </section>
+
+      <section id="s3" class="clip" data-start="8" data-duration="4" data-track-index="0">
+        <h2 class="gross">Wir kaufen <em>an.</em></h2>
+        <div class="materialien">
+          <div class="material">Kupfer</div>
+          <div class="material">Messing</div>
+          <div class="material">Aluminium</div>
+          <div class="material">Edelstahl</div>
+          <div class="material">Blei</div>
+          <div class="material">Kabel</div>
+          <div class="material">Eisen &amp; Stahl</div>
+          <div class="material">Elektroschrott</div>
+        </div>
+      </section>
+
+      <section id="s4" class="clip" data-start="12" data-duration="4" data-track-index="0">
+        <h2 class="gross">
+          <span class="zeile">Ehrlich <em>gewogen.</em></span>
+          <span class="zeile">Fair <em>bezahlt.</em></span>
+        </h2>
+      </section>
+
+      <section id="s5" class="clip" data-start="16" data-duration="4" data-track-index="0">
+        <p class="aufruf">Jetzt anrufen:</p>
+        <p class="telefon">0160 90924996</p>
+        <p class="absender">Schrotty<span>-NF</span></p>
+      </section>
+
+      <div id="balken" class="clip" data-start="0" data-duration="20" data-track-index="1"></div>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      // Fortschrittsbalken über die ganze Länge
+      tl.fromTo("#balken", { scaleX: 0 }, { scaleX: 1, duration: 20, ease: "none" }, 0);
+
+      // Szene 1 (0–4 s)
+      tl.fromTo("#s1 .marke", { scale: 0.96 }, { scale: 1, duration: 1.2, ease: "power2.out" }, 0);
+      tl.fromTo("#s1 .unterzeile", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 0.9);
+      tl.to("#s1", { opacity: 0, duration: 0.35, ease: "power1.in" }, 3.65);
+
+      // Szene 2 (4–8 s)
+      tl.fromTo("#s2 .gross", { opacity: 0, x: -80 }, { opacity: 1, x: 0, duration: 0.6, ease: "power3.out" }, 4.1);
+      tl.fromTo("#s2 .leistung", { opacity: 0, y: 70 }, { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.6)", stagger: 0.18 }, 4.6);
+      tl.to("#s2", { opacity: 0, duration: 0.35, ease: "power1.in" }, 7.65);
+
+      // Szene 3 (8–12 s)
+      tl.fromTo("#s3 .gross", { opacity: 0, x: -80 }, { opacity: 1, x: 0, duration: 0.6, ease: "power3.out" }, 8.1);
+      tl.fromTo("#s3 .material", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2)", stagger: 0.1 }, 8.6);
+      tl.to("#s3", { opacity: 0, duration: 0.35, ease: "power1.in" }, 11.65);
+
+      // Szene 4 (12–16 s)
+      tl.fromTo("#s4 .zeile", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out", stagger: 0.5 }, 12.2);
+      tl.to("#s4", { opacity: 0, duration: 0.35, ease: "power1.in" }, 15.65);
+
+      // Szene 5 (16–20 s)
+      tl.fromTo("#s5 .aufruf", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 16.1);
+      tl.fromTo("#s5 .telefon", { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.6, ease: "back.out(1.8)" }, 16.4);
+      tl.fromTo("#s5 .absender", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 17.1);
+      tl.to("#s5 .telefon", { scale: 1.04, duration: 0.4, ease: "sine.inOut", yoyo: true, repeat: 3 }, 17.8);
+
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>
